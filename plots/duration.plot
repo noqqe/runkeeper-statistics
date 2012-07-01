@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 
 # Title
-set title 'Duration in hours'
+set title 'Duration in hours per activity'
 
 # PNG
 set terminal png

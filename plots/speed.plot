@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 
 # Title
-set title 'Average speed per run'
+set title 'Average speed per activity'
 
 # PNG
 set terminal png
