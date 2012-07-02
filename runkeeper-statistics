@@ -11,7 +11,7 @@ YEAR="$(date +%Y)"
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
 function distance () { 
     echo "Building distance (activity)..."
-    grep -v '^#' $DATAFILE | awk -F, '{print $2" "$3 }' > $GENOUT/distance.dat
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$3 }' > $GENOUT/distance.dat
     gnuplot plots/distance.plot
 }
 
@@ -44,26 +44,26 @@ function distance-month () {
 }
 
 function duration () { 
-    echo "Building duration..."
-    grep -v '^#' $DATAFILE | awk -F, '{print $2" "$4 }' > $GENOUT/duration.dat
+    echo "Building duration...(activity)"
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$4 }' > $GENOUT/duration.dat
     gnuplot plots/duration.plot
 }
 
 function pace () { 
     echo "Building pace..."
-    grep -v '^#' $DATAFILE | awk -F, '{print $2" "$5 }' > $GENOUT/pace.dat
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$5 }' > $GENOUT/pace.dat
     gnuplot plots/pace.plot
 }
 
 function speed () { 
     echo "Building speed..."
-    grep -v '^#' $DATAFILE | awk -F, '{print $2" "$6 }' > $GENOUT/speed.dat
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$6 }' > $GENOUT/speed.dat
     gnuplot plots/speed.plot
 }
 
 function calories () {
     echo "Building calories..."
-    grep -v '^#' $DATAFILE | awk -F, '{print $2" "$7 }' > $GENOUT/calories.dat
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$7 }' > $GENOUT/calories.dat
     gnuplot plots/calories.plot
 } 
 
@@ -97,7 +97,7 @@ function calories-month () {
 
 function climb () { 
 echo "Building climb..."
-grep -v '^#' $DATAFILE | awk -F, '{print $2" "$8 }' > $GENOUT/climb.dat
+grep -v '^#' $DATAFILE | awk -F, '{print $1" "$8 }' > $GENOUT/climb.dat
 gnuplot plots/climb.plot
 }
 
