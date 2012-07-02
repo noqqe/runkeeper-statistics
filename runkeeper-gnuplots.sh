@@ -1,8 +1,10 @@
 #!/bin/bash
 GENOUT="generated"
-DATAFILE="runs.data"
+DATAFILE="activity.dat"
 PNGOUT="png"
-SITE="html/index.html"
+INDEXSITE="html/index.html"
+ACTIVITIESSITE="html/activities.html"
+MONTHLYSITE="html/monthly.html"
 YEAR="$(date +%Y)"
 ## Data generation and plotting
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
@@ -156,7 +158,7 @@ function moving () {
     mv *.png png/ 
 }
 
-function make-index () {
+function html-index () {
     cat html/header.html 
     echo '<div id="content">' 
     echo '<h2>Overall Stats</h2>'
@@ -167,14 +169,51 @@ function make-index () {
         echo "$x<br>"
     done
     IFS=$OIFS
-    echo '<h2>Graphs</h2>'
-    for x in $(ls png/*.png); do
+    echo '<h2>Your Graphs by Activity</h2>'
+    for x in $(ls png/*-activity.png); do
         echo "<img src=\"../$x\"><br/><br/><br/>"
     done
     echo '</div> <!-- content -->'
     cat html/footer.html
 }
-    
+
+function html-activities () {
+    cat html/header.html 
+    echo '<div id="content">' 
+    echo '<h2>Your Activities</h2>'
+    OIFS=$IFS
+    IFS='
+'
+    echo "<ul>"
+    #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
+    for x in $(cat activity.dat | grep -v ^# | sort -rn); do
+        echo $x | awk -F, '{print "<li>" $1 \
+            "<br>Date: "$2 "<br>Distance: "$2 \
+            "<br>Duration: "$3 \
+            "<br>Pace: "$4\
+            "<br>Speed: "$5\
+            "<br>Burned: "$6\
+            "<br>Climb: "$7\
+            "<br><br></li>"}'
+    done
+    echo "</ul>"
+    echo '</div> <!-- content -->'
+    IFS=$OIFS
+    cat html/footer.html
+}   
+
+function html-monthly () {
+    cat html/header.html 
+    echo '<div id="content">' 
+    echo '<h2>Your Graphs Monthly</h2>'
+    for x in $(ls png/*-month.png); do
+        echo "<img src=\"../$x\"><br/><br/><br/>"
+    done
+    echo '</div> <!-- content -->'
+    IFS=$OIFS
+    cat html/footer.html
+}   
+
 # devel
 ## Runtime
 calories
@@ -186,4 +225,5 @@ duration
 distance-month
 calories-month
 moving
-make-index > $SITE 
+html-index > $INDEXSITE 
+html-activities > $ACTIVITIESSITE 
