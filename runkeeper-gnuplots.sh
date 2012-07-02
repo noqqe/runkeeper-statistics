@@ -5,6 +5,7 @@ PNGOUT="png"
 INDEXSITE="html/index.html"
 ACTIVITIESSITE="html/activities.html"
 MONTHLYSITE="html/monthly.html"
+OVERALLSITE="html/overall.html"
 YEAR="$(date +%Y)"
 ## Data generation and plotting
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
@@ -161,14 +162,6 @@ function moving () {
 function html-index () {
     cat html/header.html 
     echo '<div id="content">' 
-    echo '<h2>Overall Stats</h2>'
-    OIFS=$IFS
-    IFS='
-'
-    for x in $(overall); do
-        echo "$x<br>"
-    done
-    IFS=$OIFS
     echo '<h2>Your Graphs by Activity</h2>'
     for x in $(ls png/*-activity.png); do
         echo "<img src=\"../$x\"><br/><br/><br/>"
@@ -214,6 +207,21 @@ function html-monthly () {
     cat html/footer.html
 }   
 
+function html-overall () {
+    cat html/header.html 
+    echo '<div id="content">' 
+    echo '<h2>Overall Stats</h2>'
+    OIFS=$IFS
+    IFS='
+'
+    for x in $(overall); do
+        echo "$x<br>"
+    done
+    IFS=$OIFS
+    echo '</div> <!-- content -->'
+    cat html/footer.html
+}
+
 # devel
 ## Runtime
 calories
@@ -227,3 +235,5 @@ calories-month
 moving
 html-index > $INDEXSITE 
 html-activities > $ACTIVITIESSITE 
+html-monthly > $MONTHLYSITE
+html-overall > $OVERALLSITE

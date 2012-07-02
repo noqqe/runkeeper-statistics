@@ -5,7 +5,7 @@ set title 'Your burned calories per activity'
 
 # PNG
 set terminal png
-set output 'calories.png'
+set output 'calories-activity.png'
 
 set style line 1 lt 1 lw 3 pt 3 linecolor rgb "#1874CD"
 
