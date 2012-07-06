@@ -1,12 +1,51 @@
 #!/bin/bash
-GENOUT="generated"
 DATAFILE="activity.dat"
+GENOUT="generated"
 PNGOUT="png"
-INDEXSITE="html/index.html"
-ACTIVITIESSITE="html/activities.html"
-MONTHLYSITE="html/monthly.html"
-OVERALLSITE="html/overall.html"
+HTMLOUT="html"
+INDEXSITE=$HTMLOUT"/index.html"
+ACTIVITIESSITE=$HTMLOUT"/activities.html"
+MONTHLYSITE=$HTMLOUT"/monthly.html"
+OVERALLSITE=$HTMLOUT"/overall.html"
 YEAR="$(date +%Y)"
+
+##Check variables
+#DATAFILE exists? if not exit ...
+if [ ! -e $DATAFILE ]; then
+    echo "ERROR data file not found!" 
+    exit
+fi
+
+#GENOUT exists? if not create ...
+if [ ! -d $GENOUT ]; then
+    echo "\"generated\" folder does not exist ... creating it ..."
+    mkdir $GENOUT
+    if [ ! -d $GENOUT ]; then
+        echo "ERROR creating \"generated\" folder .. check permissions!"
+        exit
+    fi
+fi
+
+#PNGOUT exists? if not create ...
+if [ ! -d $PNGOUT ]; then
+    echo "\"html\" folder does not exist ... creating it ..."
+    mkdir $PNGOUT
+    if [ ! -d $PNGOUT ]; then
+        echo "ERROR creating \"html\" folder .. check permissions!" 
+        exit
+    fi
+fi
+
+#HTMLOUT exists? if not create ...
+if [ ! -d $HTMLOUT ]; then
+    echo "\"html\" folder does not exist ... creating it ..."
+    mkdir $HTMLOUT
+    if [ ! -d $HTMLOUT ]; then
+        echo "ERROR creating \"html\" folder .. check permissions!" 
+        exit
+    fi
+fi
+
 ## Data generation and plotting
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
 function distance () { 
