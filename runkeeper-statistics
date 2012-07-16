@@ -70,6 +70,34 @@ function duration () {
     gnuplot plots/duration.plot
 }
 
+function duration-month () { 
+    echo "Building duration (monthly)..."
+        for x in {1..12} ; do
+                C=0
+                y=$((x+1))
+                if [ ${#x} -eq 1 ]; then
+                        x="0$x"
+                fi
+                if [ ${#y} -eq 1 ]; then
+                        y="0$y"
+                fi
+                if [ ${y} -eq 13 ]; then
+                    f=$(grep -v '^#' $DATAFILE | grep "$YEAR-12-" | awk -F, '{print $4}')
+                    for z in $f; do 
+                        C=$(echo "$C + ${z:-0}" | bc )
+                    done
+                    echo "$x $C"
+                else
+                    f=$(grep -v '^#' $DATAFILE | grep "$YEAR-$x-" | awk -F, '{print $4}')
+                    for z in $f; do 
+                        C=$(echo "$C + ${z:-0}" | bc )
+                    done
+                    echo "$x $C"
+                fi
+        done  > $GENOUT/duration-month.dat
+    gnuplot plots/duration-month.plot
+}
+
 function pace () { 
     echo "Building pace..."
     grep -v '^#' $DATAFILE | awk -F, '{print $1" "$5 }' > $GENOUT/pace.dat
@@ -250,13 +278,14 @@ for x in $GENOUT $HTMLOUT $PNGOUT; do
     check_dir $x
 done
 calories
+calories-month
 distance
+distance-month
 climb
 speed
 pace
 duration
-distance-month
-calories-month
+duration-month
 moving
 html-index > $INDEXSITE 
 html-activities > $ACTIVITIESSITE 
