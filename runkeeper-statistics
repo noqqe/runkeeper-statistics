@@ -1,12 +1,33 @@
 #!/bin/bash
-GENOUT="generated"
 DATAFILE="activity.dat"
+GENOUT="generated"
 PNGOUT="png"
-INDEXSITE="html/index.html"
-ACTIVITIESSITE="html/activities.html"
-MONTHLYSITE="html/monthly.html"
-OVERALLSITE="html/overall.html"
+HTMLOUT="html"
+INDEXSITE=$HTMLOUT"/index.html"
+ACTIVITIESSITE=$HTMLOUT"/activities.html"
+MONTHLYSITE=$HTMLOUT"/monthly.html"
+OVERALLSITE=$HTMLOUT"/overall.html"
 YEAR="$(date +%Y)"
+
+##Check variables
+#DATAFILE exists? if not exit ...
+if [ ! -e $DATAFILE ]; then
+    echo "ERROR data file not found!" 
+    exit
+fi
+
+# Function for $GENOUT, $PNGOUT, $HTMLOUT
+function check_dir () {
+    if [ ! -d $1 ]; then
+        echo "\"$1\" folder does not exist ... creating it ..."
+        mkdir $1
+        if [ ! -d $1 ]; then
+            echo "ERROR creating \"$1\" folder .. check permissions!"
+            exit 1
+        fi
+    fi
+}
+
 ## Data generation and plotting
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
 function distance () { 
@@ -96,9 +117,9 @@ function calories-month () {
 }
 
 function climb () { 
-echo "Building climb..."
-grep -v '^#' $DATAFILE | awk -F, '{print $1" "$8 }' > $GENOUT/climb.dat
-gnuplot plots/climb.plot
+    echo "Building climb..."
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$8 }' > $GENOUT/climb.dat
+    gnuplot plots/climb.plot
 }
 
 ## General overall stats
@@ -155,8 +176,10 @@ function overall () {
 
 ## Cleanup and HTML Generation 
 function moving () {
-    rm png/*.png
-    mv *.png png/ 
+    if [  -d $PNGOUT ]; then
+        rm $PNGOUT/*.png &> /dev/null
+        mv *.png $PNGOUT/ 
+    fi
 }
 
 function html-index () {
@@ -222,8 +245,10 @@ function html-overall () {
     cat html/footer.html
 }
 
-# devel
 ## Runtime
+for x in $GENOUT $HTMLOUT $PNGOUT; do 
+    check_dir $x
+done
 calories
 distance
 climb

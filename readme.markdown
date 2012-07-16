@@ -21,5 +21,5 @@ and run the script:
 
 # Dependencies
 
-`bash >=4.1`, `awk`, `sed`, `bc`, `grep`. 
+`gnuplot`, `bash >=4.1`, `awk`, `sed`, `bc`, `grep`. 
 You see... should work on the most linux boxes.  
