@@ -150,6 +150,34 @@ function climb () {
     gnuplot plots/climb.plot
 }
 
+function climb-month () { 
+    echo "Building climb (monthly)..."
+        for x in {1..12} ; do
+                C=0
+                y=$((x+1))
+                if [ ${#x} -eq 1 ]; then
+                        x="0$x"
+                fi
+                if [ ${#y} -eq 1 ]; then
+                        y="0$y"
+                fi
+                if [ ${y} -eq 13 ]; then
+                    f=$(grep -v '^#' $DATAFILE | grep "$YEAR-12-" | awk -F, '{print $8}')
+                    for z in $f; do 
+                        C=$(echo "$C + ${z:-0}" | bc )
+                    done
+                    echo "$x $C"
+                else
+                    f=$(grep -v '^#' $DATAFILE | grep "$YEAR-$x-" | awk -F, '{print $8}')
+                    for z in $f; do 
+                        C=$(echo "$C + ${z:-0}" | bc )
+                    done
+                    echo "$x $C"
+                fi
+        done  > $GENOUT/climb-month.dat
+    gnuplot plots/climb-month.plot
+}
+
 ## General overall stats
 function overall () {
 
@@ -282,6 +310,7 @@ calories-month
 distance
 distance-month
 climb
+climb-month
 speed
 pace
 duration
