@@ -16,35 +16,17 @@ if [ ! -e $DATAFILE ]; then
     exit
 fi
 
-#GENOUT exists? if not create ...
-if [ ! -d $GENOUT ]; then
-    echo "\"generated\" folder does not exist ... creating it ..."
-    mkdir $GENOUT
-    if [ ! -d $GENOUT ]; then
-        echo "ERROR creating \"generated\" folder .. check permissions!"
-        exit
+# Function for $GENOUT, $PNGOUT, $HTMLOUT
+function check_dir () {
+    if [ ! -d $1 ]; then
+        echo "\"$1\" folder does not exist ... creating it ..."
+        mkdir $1
+        if [ ! -d $1 ]; then
+            echo "ERROR creating \"$1\" folder .. check permissions!"
+            exit 1
+        fi
     fi
-fi
-
-#PNGOUT exists? if not create ...
-if [ ! -d $PNGOUT ]; then
-    echo "\"html\" folder does not exist ... creating it ..."
-    mkdir $PNGOUT
-    if [ ! -d $PNGOUT ]; then
-        echo "ERROR creating \"html\" folder .. check permissions!" 
-        exit
-    fi
-fi
-
-#HTMLOUT exists? if not create ...
-if [ ! -d $HTMLOUT ]; then
-    echo "\"html\" folder does not exist ... creating it ..."
-    mkdir $HTMLOUT
-    if [ ! -d $HTMLOUT ]; then
-        echo "ERROR creating \"html\" folder .. check permissions!" 
-        exit
-    fi
-fi
+}
 
 ## Data generation and plotting
 #ID, Date, Distance, Duration, Pace, Speed, Burned, Climb
@@ -135,9 +117,9 @@ function calories-month () {
 }
 
 function climb () { 
-echo "Building climb..."
-grep -v '^#' $DATAFILE | awk -F, '{print $1" "$8 }' > $GENOUT/climb.dat
-gnuplot plots/climb.plot
+    echo "Building climb..."
+    grep -v '^#' $DATAFILE | awk -F, '{print $1" "$8 }' > $GENOUT/climb.dat
+    gnuplot plots/climb.plot
 }
 
 ## General overall stats
@@ -194,8 +176,10 @@ function overall () {
 
 ## Cleanup and HTML Generation 
 function moving () {
-    rm png/*.png
-    mv *.png png/ 
+    if [  -d $PNGOUT ]; then
+        rm $PNGOUT/*.png &> /dev/null
+        mv *.png $PNGOUT/ 
+    fi
 }
 
 function html-index () {
@@ -261,8 +245,10 @@ function html-overall () {
     cat html/footer.html
 }
 
-# devel
 ## Runtime
+for x in $GENOUT $HTMLOUT $PNGOUT; do 
+    check_dir $x
+done
 calories
 distance
 climb
